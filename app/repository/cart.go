@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"synapsis-challenge/app/contract"
 	"synapsis-challenge/app/entity"
 	"synapsis-challenge/app/service"
@@ -88,6 +89,61 @@ func (r *cartRepository) Delete(ctx context.Context, customerId, productId int64
 	_, err := r.db.Exec(query, customerId, productId)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	return nil
+
+}
+
+func (r *cartRepository) GetByCustomerIdAndProductIds(ctx context.Context, customerId int64, productIds []int64) ([]entity.Cart, error) {
+	placeholders := make([]string, len(productIds))
+	args := make([]interface{}, len(productIds)+1)
+	args[0] = customerId
+
+	for i := range productIds {
+		placeholders[i] = fmt.Sprintf("$%d", i+2)
+		args[i+1] = productIds[i]
+	}
+
+	query := fmt.Sprintf("select %s from cart where customer_id = $1 and product_id in (%s)", AllFieldsCart, strings.Join(placeholders, ", "))
+	rows, err := r.db.Query(query, args...)
+	if err != nil {
+		log.Error("GetByCustomerIdAndProductIds err:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var cart []entity.Cart
+
+	for rows.Next() {
+		var c entity.Cart
+
+		err := rows.Scan(&c.Id, &c.CustomerId, &c.ProductId, &c.Quantity, &c.CreatedAt, &c.UpdatedAt)
+		if err != nil {
+			log.Error(err)
+			return nil, err
+		}
+		cart = append(cart, c)
+	}
+
+	return cart, nil
+}
+
+func (r *cartRepository) DeleteByCustomerIdAndProductIds(ctx context.Context, customerId int64, productIds []int64) error {
+	placeholders := make([]string, len(productIds))
+	args := make([]interface{}, len(productIds)+1)
+	args[0] = customerId
+
+	for i := range productIds {
+		placeholders[i] = fmt.Sprintf("$%d", i+2)
+		args[i+1] = productIds[i]
+	}
+
+	query := fmt.Sprintf("delete from cart where customer_id = $1 and product_id in (%s)", strings.Join(placeholders, ", "))
+	_, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		log.Error("DeleteCartByCustomerIdAndProductIds err:", err)
+		return err
 	}
 
 	return nil

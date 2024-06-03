@@ -23,4 +23,14 @@ type CartRepository interface {
 	GetByCustomerIdAndProductId(ctx context.Context, customerId, productId int64) (*entity.Cart, error)
 	GetByCustomerId(ctx context.Context, customerId int64) ([]entity.Cart, error)
 	Delete(ctx context.Context, customerId, productId int64) error
+	GetByCustomerIdAndProductIds(ctx context.Context, customerId int64, productIds []int64) ([]entity.Cart, error)
+	DeleteByCustomerIdAndProductIds(ctx context.Context, customerId int64, productIds []int64) error
+}
+
+type TransactionRepository interface {
+	Create(ctx context.Context, transactions []entity.Transction) error
+}
+
+type TransactionStatusRepository interface {
+	Create(ctx context.Context, transactionStatus entity.TransactionStatus) error
 }

@@ -43,6 +43,12 @@ func main() {
 	cartService := service.InitCartService(cartRepo, productRepo)
 	cartHandler := handler.InitCartHandler(cartService)
 
+	transactionRepo := repository.InitTransactionRepo(db)
+	transactionStatusRepo := repository.InitTransactionStatusRepo(db)
+
+	transactionService := service.InitTransactionService(db, cartRepo, productRepo, transactionRepo, transactionStatusRepo)
+	transactionHandler := handler.InitTransactionHandler(transactionService)
+
 	r := gin.Default()
 	r.POST("/register", customerHandler.Register)
 	r.POST("/login", customerHandler.Login)
@@ -55,6 +61,8 @@ func main() {
 		authorized.POST("/carts", cartHandler.AddCart)
 		authorized.GET("/carts", cartHandler.GetByCustomerId)
 		authorized.DELETE("/carts/products/:productId", cartHandler.DeleteByCustomerIdAndProductId)
+
+		authorized.POST("/transaction", transactionHandler.Create)
 	}
 
 	r.SetTrustedProxies(nil)
