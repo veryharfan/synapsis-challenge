@@ -13,11 +13,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type CustomerRepository interface {
-	GetByUsername(ctx context.Context, username string) (*entity.Customer, error)
-	Create(ctx context.Context, customer entity.Customer) error
-}
-
 type CustomerService interface {
 	Create(ctx context.Context, request contract.CustomerRequest) error
 	Login(ctx context.Context, request contract.CustomerRequest) (contract.LoginResponse, error)

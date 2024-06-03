@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
+	"strings"
 	"synapsis-challenge/app/contract"
 	"synapsis-challenge/app/entity"
 	"synapsis-challenge/app/service"
@@ -13,7 +14,7 @@ import (
 )
 
 const (
-	AllFields = "id, name, category, price, stock, created_at, updated_at"
+	AllFieldsProduct = "id, name, category, price, stock, created_at, updated_at"
 )
 
 type productRepository struct {
@@ -27,7 +28,7 @@ func InitProductRepository(db *sql.DB) service.ProductRepository {
 }
 
 func (r *productRepository) GetByCategory(ctx context.Context, param contract.GetListProductParam) ([]entity.Product, error) {
-	query := fmt.Sprintf("select %s from product", AllFields)
+	query := fmt.Sprintf("select %s from product", AllFieldsProduct)
 	args := []interface{}{}
 
 	if param.Category != "" {
@@ -77,4 +78,35 @@ func (r *productRepository) GetCountByCategory(ctx context.Context, param contra
 	}
 
 	return count, nil
+}
+
+func (r *productRepository) GetByIds(ctx context.Context, ids []int64) ([]entity.Product, error) {
+	placeholders := make([]string, len(ids))
+	args := make([]interface{}, len(ids))
+	for i := range ids {
+		placeholders[i] = fmt.Sprintf("$%d", i+1)
+		args[i] = ids[i]
+	}
+
+	query := fmt.Sprintf("select %s from product where id in (%s)", AllFieldsProduct, strings.Join(placeholders, ", "))
+	rows, err := r.db.Query(query, args...)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var products []entity.Product
+
+	for rows.Next() {
+		var p entity.Product
+
+		err := rows.Scan(&p.Id, &p.Name, &p.Category, &p.Price, &p.Stock, &p.CreatedAt, &p.UpdatedAt)
+		if err != nil {
+			log.Error(err)
+			return nil, err
+		}
+		products = append(products, p)
+	}
+
+	return products, nil
 }

@@ -35,3 +35,15 @@ func (h *cartHandler) AddCart(c *gin.Context) {
 
 	c.JSON(http.StatusOK, contract.APIResponse(gin.H{}, nil))
 }
+
+func (h *cartHandler) GetByCustomerId(c *gin.Context) {
+	customerId := int64(c.GetFloat64("uid"))
+
+	resp, err := h.cartService.GetByCustomerId(c.Request.Context(), customerId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, contract.APIResponseErr(contract.ErrInternalServer))
+		return
+	}
+
+	c.JSON(http.StatusOK, contract.APIResponse(resp, nil))
+}

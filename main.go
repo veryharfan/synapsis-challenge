@@ -40,7 +40,7 @@ func main() {
 	productHandler := handler.InitProductHandler(productService)
 
 	cartRepo := repository.InitCartRepository(db)
-	cartService := service.InitCartService(cartRepo)
+	cartService := service.InitCartService(cartRepo, productRepo)
 	cartHandler := handler.InitCartHandler(cartService)
 
 	r := gin.Default()
@@ -53,6 +53,7 @@ func main() {
 	authorized.Use(middleware.Authentication(config.JWT))
 	{
 		authorized.POST("/cart", cartHandler.AddCart)
+		authorized.GET("/cart", cartHandler.GetByCustomerId)
 	}
 
 	r.SetTrustedProxies(nil)

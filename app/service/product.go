@@ -3,15 +3,9 @@ package service
 import (
 	"context"
 	"synapsis-challenge/app/contract"
-	"synapsis-challenge/app/entity"
 
 	"github.com/sirupsen/logrus"
 )
-
-type ProductRepository interface {
-	GetByCategory(ctx context.Context, param contract.GetListProductParam) ([]entity.Product, error)
-	GetCountByCategory(ctx context.Context, param contract.GetListProductParam) (int, error)
-}
 
 type ProductService interface {
 	GetByCategory(ctx context.Context, param contract.GetListProductParam) ([]contract.ProductResponse, *contract.Pagination, error)

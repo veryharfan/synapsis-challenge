@@ -61,3 +61,24 @@ func (r *cartRepository) GetByCustomerIdAndProductId(ctx context.Context, custom
 
 	return &cart, nil
 }
+
+func (r *cartRepository) GetByCustomerId(ctx context.Context, customerId int64) ([]entity.Cart, error) {
+	query := fmt.Sprintf("select %s from cart where customer_id = $1", AllFieldsCart)
+	rows, err := r.db.Query(query, customerId)
+	if err != nil {
+		return nil, err
+	}
+
+	var cart []entity.Cart
+	for rows.Next() {
+		var item entity.Cart
+		err = rows.Scan(&item.Id, &item.CustomerId, &item.ProductId, &item.Quantity, &item.CreatedAt, &item.UpdatedAt)
+		if err != nil {
+			log.Errorf("GetCartByCustomerId err:%v", err)
+			return nil, err
+		}
+		cart = append(cart, item)
+	}
+
+	return cart, nil
+}
