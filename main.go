@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"os"
+	"synapsis-challenge/app/handler"
+	"synapsis-challenge/app/repository"
+	"synapsis-challenge/app/service"
 	"synapsis-challenge/config"
-	"synapsis-challenge/src/handler"
-	"synapsis-challenge/src/repository"
-	"synapsis-challenge/src/service"
+	"synapsis-challenge/migration"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -16,6 +18,12 @@ import (
 func main() {
 
 	config := config.InitConfig(context.Background())
+
+	args := os.Args
+	if migrationArgs, runMigration := migration.IsRunMigration(args); runMigration {
+		migration.RunMigration(migrationArgs, config.DB)
+		return
+	}
 
 	db, err := sql.Open("postgres", config.DB.ConnUri)
 	if err != nil {
@@ -31,5 +39,5 @@ func main() {
 	r.POST("/login", customerHandler.Login)
 
 	r.SetTrustedProxies(nil)
-	r.Run(":8080")
+	r.Run(":" + config.Service.Port)
 }

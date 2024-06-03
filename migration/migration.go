@@ -24,7 +24,7 @@ type migrationService struct {
 	migrate *migrate.Migrate
 }
 
-func New(dbConfig config.DB) MigrationService {
+func InitMigrationService(dbConfig config.DB) MigrationService {
 	// Connect to the database
 	db, err := sql.Open("postgres", dbConfig.ConnUri)
 	if err != nil {

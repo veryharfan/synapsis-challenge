@@ -19,8 +19,13 @@ type (
 	}
 
 	Configuration struct {
-		DB  DB  `mapstructure:",squash"`
-		JWT JWT `mapstructure:",squash"`
+		Service Service `mapstructure:",squash"`
+		DB      DB      `mapstructure:",squash"`
+		JWT     JWT     `mapstructure:",squash"`
+	}
+
+	Service struct {
+		Port string `mapstructure:"SERVICE_PORT"`
 	}
 )
 

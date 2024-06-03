@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"synapsis-challenge/app/contract"
+	"synapsis-challenge/app/entity"
 	"synapsis-challenge/config"
-	"synapsis-challenge/src/contract"
-	"synapsis-challenge/src/entity"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"

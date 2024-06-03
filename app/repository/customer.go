@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"synapsis-challenge/src/entity"
-	"synapsis-challenge/src/service"
+	"synapsis-challenge/app/entity"
+	"synapsis-challenge/app/service"
 )
 
 type customerRepository struct {
