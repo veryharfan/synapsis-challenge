@@ -14,6 +14,7 @@ import (
 
 type TransactionService interface {
 	Checkout(ctx context.Context, param contract.CheckoutRequest) (*contract.CheckoutResponse, error)
+	Update(ctx context.Context, param contract.CallbackUpdateTransaction) error
 }
 
 type transactionService struct {
@@ -55,12 +56,12 @@ func (s *transactionService) Checkout(ctx context.Context, param contract.Checko
 	invoice := "INV/" + strconv.Itoa(int(param.CustomerId)) + "/" + time.Now().Format("20060102150405")
 
 	var total float64
-	var transactions []entity.Transction
+	var transactions []entity.Transaction
 	for _, c := range carts {
 		product := mapProductsById[c.ProductId]
 		amount := float64(c.Quantity) * product.Price
 
-		transactions = append(transactions, entity.Transction{
+		transactions = append(transactions, entity.Transaction{
 			Invoice:    invoice,
 			CustomerId: param.CustomerId,
 			ProductId:  c.ProductId,
@@ -96,4 +97,14 @@ func (s *transactionService) Checkout(ctx context.Context, param contract.Checko
 	return &contract.CheckoutResponse{
 		PaymentUrl: paymentUrl,
 	}, nil
+}
+
+func (s *transactionService) Update(ctx context.Context, param contract.CallbackUpdateTransaction) error {
+	err := s.transactionStatusRepo.UpdateByInvoice(ctx, param.Invoice, param.Status)
+	if err != nil {
+		log.Error("Update transaction status err:", err)
+		return err
+	}
+
+	return nil
 }

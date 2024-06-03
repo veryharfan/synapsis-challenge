@@ -28,9 +28,10 @@ type CartRepository interface {
 }
 
 type TransactionRepository interface {
-	Create(ctx context.Context, transactions []entity.Transction) error
+	Create(ctx context.Context, transactions []entity.Transaction) error
 }
 
 type TransactionStatusRepository interface {
 	Create(ctx context.Context, transactionStatus entity.TransactionStatus) error
+	UpdateByInvoice(ctx context.Context, invoice, status string) error
 }

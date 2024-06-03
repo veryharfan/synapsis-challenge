@@ -8,3 +8,8 @@ type CheckoutRequest struct {
 type CheckoutResponse struct {
 	PaymentUrl string `json:"paymentUrl"`
 }
+
+type CallbackUpdateTransaction struct {
+	Invoice string `json:"invoice"`
+	Status  string `json:"status"`
+}

@@ -2,7 +2,7 @@ package entity
 
 import "time"
 
-type Transction struct {
+type Transaction struct {
 	Id         int64
 	Invoice    string
 	CustomerId int64

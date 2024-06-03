@@ -34,3 +34,19 @@ func (h *transactionHandler) Create(c *gin.Context) {
 
 	c.JSON(http.StatusOK, contract.APIResponse(resp, nil))
 }
+
+func (h *transactionHandler) CallbackUpdateStatus(c *gin.Context) {
+	var request contract.CallbackUpdateTransaction
+	if err := c.BindJSON(&request); err != nil {
+		c.JSON(http.StatusInternalServerError, contract.APIResponseErr(contract.ErrInternalServer))
+		return
+	}
+
+	err := h.transactionService.Update(c.Request.Context(), request)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, contract.APIResponseErr(contract.ErrInternalServer))
+		return
+	}
+
+	c.JSON(http.StatusOK, contract.APIResponse(gin.H{}, nil))
+}

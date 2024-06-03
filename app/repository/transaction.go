@@ -10,6 +10,10 @@ import (
 	"synapsis-challenge/app/service"
 )
 
+const (
+	AllFieldsTransaction = "id, invoice, customer_id, product_id, quantity, amount, created_at, updated_at"
+)
+
 type transactionRepo struct {
 	db *sql.DB
 }
@@ -20,7 +24,7 @@ func InitTransactionRepo(db *sql.DB) service.TransactionRepository {
 	}
 }
 
-func (r *transactionRepo) Create(ctx context.Context, transactions []entity.Transction) error {
+func (r *transactionRepo) Create(ctx context.Context, transactions []entity.Transaction) error {
 	if len(transactions) == 0 {
 		return errors.New("no transactions to insert")
 	}

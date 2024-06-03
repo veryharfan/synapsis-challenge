@@ -65,6 +65,9 @@ func main() {
 		authorized.POST("/transaction", transactionHandler.Create)
 	}
 
+	callbackAuth := r.Group("/").Use(middleware.PaymentGatewayAuth())
+	callbackAuth.POST("/callback/transaction", transactionHandler.CallbackUpdateStatus)
+
 	r.SetTrustedProxies(nil)
 	r.Run(":" + config.Service.Port)
 }

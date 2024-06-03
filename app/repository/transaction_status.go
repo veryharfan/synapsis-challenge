@@ -29,3 +29,14 @@ func (r *transactionStatusRepo) Create(ctx context.Context, transactionStatus en
 
 	return nil
 }
+
+func (r *transactionStatusRepo) UpdateByInvoice(ctx context.Context, invoice, status string) error {
+	query := "update transaction_status set status = $1 where invoice = $2"
+	_, err := r.db.ExecContext(ctx, query, status, invoice)
+	if err != nil {
+		log.Error("UpdateTransactionStatusByInvoice err:", err)
+		return err
+	}
+
+	return nil
+}

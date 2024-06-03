@@ -73,3 +73,29 @@ func Authentication(jwtConfig config.JWT) gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func PaymentGatewayAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Get token from Authorization header
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, contract.APIResponseErr(contract.ErrUnauthorized))
+			return
+		}
+
+		// Extract token from header
+		parts := strings.Split(authHeader, " ")
+		if len(parts) != 2 || parts[0] != "Bearer" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, contract.APIResponseErr(contract.ErrUnauthorized))
+			return
+		}
+		tokenString := parts[1]
+
+		if tokenString != "payment-gateway-token" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, contract.APIResponseErr(contract.ErrUnauthorized))
+			return
+		}
+
+		c.Next()
+	}
+}
