@@ -34,9 +34,15 @@ func main() {
 	customerService := service.InitCustomerService(customerRepository, config.JWT)
 	customerHandler := handler.InitCustomerHandler(customerService)
 
+	productRepo := repository.InitProductRepository(db)
+	productService := service.InitProductService(productRepo)
+	productHandler := handler.InitProductHandler(productService)
+
 	r := gin.Default()
 	r.POST("/register", customerHandler.Register)
 	r.POST("/login", customerHandler.Login)
+
+	r.GET("/products", productHandler.GetByCategory)
 
 	r.SetTrustedProxies(nil)
 	r.Run(":" + config.Service.Port)

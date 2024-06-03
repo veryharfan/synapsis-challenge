@@ -34,7 +34,7 @@ func (h *customerHandler) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, contract.APIResponse(map[string]interface{}{}))
+	c.JSON(http.StatusOK, contract.APIResponse(map[string]interface{}{}, nil))
 }
 
 func (h *customerHandler) Login(c *gin.Context) {
@@ -54,5 +54,5 @@ func (h *customerHandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, contract.APIResponse(resp))
+	c.IndentedJSON(http.StatusOK, contract.APIResponse(resp, nil))
 }
