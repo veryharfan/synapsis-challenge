@@ -52,9 +52,9 @@ func main() {
 	authorized := r.Group("/")
 	authorized.Use(middleware.Authentication(config.JWT))
 	{
-		authorized.POST("/cart", cartHandler.AddCart)
-		authorized.GET("/cart", cartHandler.GetByCustomerId)
-		authorized.DELETE("/cart/products/:productId", cartHandler.DeleteByCustomerIdAndProductId)
+		authorized.POST("/carts", cartHandler.AddCart)
+		authorized.GET("/carts", cartHandler.GetByCustomerId)
+		authorized.DELETE("/carts/products/:productId", cartHandler.DeleteByCustomerIdAndProductId)
 	}
 
 	r.SetTrustedProxies(nil)
