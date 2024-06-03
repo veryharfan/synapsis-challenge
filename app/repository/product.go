@@ -91,7 +91,8 @@ func (r *productRepository) GetByIds(ctx context.Context, ids []int64) ([]entity
 	query := fmt.Sprintf("select %s from product where id in (%s)", AllFieldsProduct, strings.Join(placeholders, ", "))
 	rows, err := r.db.Query(query, args...)
 	if err != nil {
-		log.Fatal(err)
+		log.Error("GetProductByIds err:", err)
+		return nil, err
 	}
 	defer rows.Close()
 
