@@ -19,8 +19,8 @@ func InitCustomerRepository(db *sql.DB) service.CustomerRepository {
 func (r *customerRepository) GetByUsername(ctx context.Context, username string) (*entity.Customer, error) {
 	customer := entity.Customer{}
 	err := r.db.
-		QueryRow("select id, username, password from customer where username = $1", username).
-		Scan(&customer.Id, &customer.Username, &customer.Password)
+		QueryRow("select id, username, password, created_at, updated_at from customer where username = $1", username).
+		Scan(&customer.Id, &customer.Username, &customer.Password, &customer.CreatedAt, &customer.UpdatedAt)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
