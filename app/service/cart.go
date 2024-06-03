@@ -13,6 +13,7 @@ import (
 type CartService interface {
 	AddToCart(ctx context.Context, param contract.CartRequest) error
 	GetByCustomerId(ctx context.Context, customerId int64) ([]contract.CartResponse, error)
+	DeleteByCustomerIdAndProductId(ctx context.Context, customerId, productId int64) error
 }
 
 type cartService struct {
@@ -93,4 +94,14 @@ func (s *cartService) GetByCustomerId(ctx context.Context, customerId int64) ([]
 	}
 
 	return resp, nil
+}
+
+func (s *cartService) DeleteByCustomerIdAndProductId(ctx context.Context, customerId, productId int64) error {
+	err := s.cartRepo.Delete(ctx, customerId, productId)
+	if err != nil {
+		log.Errorf("DeleteCart err: %v", err)
+		return err
+	}
+
+	return nil
 }

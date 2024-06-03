@@ -54,6 +54,7 @@ func main() {
 	{
 		authorized.POST("/cart", cartHandler.AddCart)
 		authorized.GET("/cart", cartHandler.GetByCustomerId)
+		authorized.DELETE("/cart/products/:productId", cartHandler.DeleteByCustomerIdAndProductId)
 	}
 
 	r.SetTrustedProxies(nil)

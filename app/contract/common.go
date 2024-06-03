@@ -8,6 +8,7 @@ import (
 var (
 	ErrInternalServer = fmt.Errorf("internal server error")
 	ErrUnauthorized   = fmt.Errorf("request unauthorized")
+	ErrBadRequest     = fmt.Errorf("bad request")
 )
 
 type Response struct {

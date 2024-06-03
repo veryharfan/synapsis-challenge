@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"synapsis-challenge/app/contract"
 	"synapsis-challenge/app/service"
 
@@ -46,4 +47,21 @@ func (h *cartHandler) GetByCustomerId(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, contract.APIResponse(resp, nil))
+}
+
+func (h *cartHandler) DeleteByCustomerIdAndProductId(c *gin.Context) {
+	customerId := int64(c.GetFloat64("uid"))
+	productId, err := strconv.Atoi(c.Param("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, contract.APIResponseErr(contract.ErrBadRequest))
+		return
+	}
+
+	err = h.cartService.DeleteByCustomerIdAndProductId(c.Request.Context(), customerId, int64(productId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, contract.APIResponseErr(contract.ErrInternalServer))
+		return
+	}
+
+	c.JSON(http.StatusOK, contract.APIResponse(gin.H{}, nil))
 }

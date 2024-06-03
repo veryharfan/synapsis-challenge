@@ -82,3 +82,13 @@ func (r *cartRepository) GetByCustomerId(ctx context.Context, customerId int64) 
 
 	return cart, nil
 }
+
+func (r *cartRepository) Delete(ctx context.Context, customerId, productId int64) error {
+	query := "delete from cart where customer_id = $1 and product_id = $2"
+	_, err := r.db.Exec(query, customerId, productId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}

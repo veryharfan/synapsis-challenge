@@ -22,4 +22,5 @@ type CartRepository interface {
 	Update(ctx context.Context, param contract.CartRequest) error
 	GetByCustomerIdAndProductId(ctx context.Context, customerId, productId int64) (*entity.Cart, error)
 	GetByCustomerId(ctx context.Context, customerId int64) ([]entity.Cart, error)
+	Delete(ctx context.Context, customerId, productId int64) error
 }
