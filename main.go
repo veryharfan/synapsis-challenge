@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"synapsis-challenge/app/handler"
+	"synapsis-challenge/app/middleware"
 	"synapsis-challenge/app/repository"
 	"synapsis-challenge/app/service"
 	"synapsis-challenge/config"
@@ -38,11 +39,21 @@ func main() {
 	productService := service.InitProductService(productRepo)
 	productHandler := handler.InitProductHandler(productService)
 
+	cartRepo := repository.InitCartRepository(db)
+	cartService := service.InitCartService(cartRepo)
+	cartHandler := handler.InitCartHandler(cartService)
+
 	r := gin.Default()
 	r.POST("/register", customerHandler.Register)
 	r.POST("/login", customerHandler.Login)
 
 	r.GET("/products", productHandler.GetByCategory)
+
+	authorized := r.Group("/")
+	authorized.Use(middleware.Authentication(config.JWT))
+	{
+		authorized.POST("/cart", cartHandler.AddCart)
+	}
 
 	r.SetTrustedProxies(nil)
 	r.Run(":" + config.Service.Port)
