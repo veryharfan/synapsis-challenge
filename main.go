@@ -69,5 +69,5 @@ func main() {
 	callbackAuth.POST("/callback/transaction", transactionHandler.CallbackUpdateStatus)
 
 	r.SetTrustedProxies(nil)
-	r.Run(":" + config.Service.Port)
+	r.Run(":8080")
 }
